@@ -12,21 +12,20 @@ Not much to say here, but the idea is to use the same interface for TCP and UDP:
 Server App (class ServerApp : public server::Application) It is listening on host:port, opens thread for each client and sends ACK for each message sent by the client:
   
    **Application Contructor**
+	
+	   Application::Application(std::string host, int port):
+	  		szHost{ host },
+	  		nPort{ port },
+	  		m_pServer{ new winpoxi::Tcp(szHost, nPort) },
+	  		m_bTerminateFlag{ true },
+	  		m_ulClientID{ 0 },
+	  		m_pServerThread{ nullptr }
+	    {
+	      [...]
+	    }
 
-namespace server
-{
-   Application::Application(std::string host, int port):
-  		szHost{ host },
-  		nPort{ port },
-  		m_pServer{ new winpoxi::Tcp(szHost, nPort) },
-  		m_bTerminateFlag{ true },
-  		m_ulClientID{ 0 },
-  		m_pServerThread{ nullptr }
-    {
-      [...]
-    }
 
- }   
+**Server side**
 
     //start thread
   	bool Application::start()
@@ -43,6 +42,8 @@ namespace server
         }
         [...]
   	}
+   
+**Client**
 
 The client side is created using the same interface:
 
