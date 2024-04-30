@@ -11,12 +11,14 @@
 #include <optional>
 
 #include "Sock.h"
+#include "Tcp.h"
+#include "Udp.h"
 
 
 namespace winpoxi
 {
 	
-	Sock::Sock(const std::string strHost, int nPort):
+	Sock::Sock(const std::string &strHost, int nPort):
 		m_sck{ INVALID_SOCKET },
 		m_nPort{ nPort },
 		m_strHost{ strHost }
@@ -29,7 +31,7 @@ namespace winpoxi
 			m_strHost = ::inet_ntoa(*((struct in_addr*)Host->h_addr));
 	}
 
-	Sock::Sock(const std::string strHost, int nPort, SOCKET sk) : Sock(strHost, nPort)
+	Sock::Sock(const std::string &strHost, int nPort, SOCKET sk) : Sock(strHost, nPort)
 	{
 		m_sck = sk;
 	}
@@ -119,5 +121,7 @@ namespace winpoxi
 	{
 		::WSACleanup();
 	}
+
+
 
 }; //winpoxi

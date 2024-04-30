@@ -4,7 +4,8 @@ namespace winpoxi
 {
 	struct Udp : public Sock
 	{
-		explicit Udp(const std::string strHost, int nPort);
+		Udp(const std::string &strHost, int nPort);
+		Udp(const std::string &strHost, int nPort, SOCKET sck);
 		virtual ~Udp();
 
 		bool create();
@@ -12,13 +13,14 @@ namespace winpoxi
 		int			snd(void* pBuff, int nLen) const;
 		int			rcv(void* pBuff, int nLen);
 
-		void		peerName(char* strHostIp, SOCKET sk = -1);
+		void		peerName(char* strHostIp);
 
 		bool connect();
 
 		//TODO :check it..
 		bool listen() const { return true; }
 		SOCKET accept() const { return m_sck;  }
+		size_t select() const { return 0; }
 
 	private:
 		struct sockaddr_in	m_SockAddrBind;

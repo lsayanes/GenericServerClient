@@ -1,5 +1,6 @@
 
 
+
 #include <iostream>
 #include <stdint.h>
 #define WIN32_LEAN_AND_MEAN
@@ -15,55 +16,55 @@
 #include <thread>
 #include <mutex>
 #include <vector>
-#include <unordered_map>
+#include <atomic>
+#include <memory>
+//#include <unordered_map>
 #include <algorithm>
 #include <ctime>
 #include <fstream>
-#include <optional>
-
 
 #include <Sock.h>
 #include <Tcp.h>
+#include <Udp.h>
 
 #include "Application.h"
 
-
-class ServerApp : public server::Application
+template<typename T>
+class ServerApp : public server::Application<T>
 {
 	std::mutex											m_mxt{};
 	std::atomic<std::time_t>							m_lastRequest;
 
 public:
-	explicit ServerApp(std::string host, int port) : server::Application(host, port),
-		m_lastRequest{ std::time(nullptr) }
+	explicit ServerApp(std::string &host, int port) : 
+		server::Application<T>(host, port),
+		m_lastRequest{ std::time(nullptr) } 
 	{
 	}
-
 
 	virtual ~ServerApp()
 	{
 	}
-
 
 	inline bool isTimeToDie() const
 	{
 		return (std::time(nullptr) - m_lastRequest > 59);
 	}
 
-	void client(winpoxi::Sock* pSock) final
+	void client(T* pSock) final
 	{
-
+		
 		uint64_t ullCnt{ 0 };
 		int nRcv{ 1 };
 		char strRcv[1024] = { 0 };
 		char strSnd[1024] = { 0 };
 
 		std::string szClientName{ "Client_" };
-		szClientName += std::to_string(clientID());
+		szClientName += std::to_string(ServerApp<T>::clientID());
 
 		std::cout << std::endl << "* New client name:" << szClientName << " host: " << pSock->host() << " conected" << std::endl << std::endl;
 
-		while (isRunning())
+		while (ServerApp<T>::isRunning())
 		{
 			m_mxt.lock();
 			if ((nRcv = pSock->rcv(strRcv, sizeof(strRcv) - 1)) > 0)
@@ -96,14 +97,17 @@ public:
 
 int main()
 {
-	ServerApp app("localhost", 2024);
 
+	std::string host = "localhost";
+
+	ServerApp<winpoxi::Tcp> app(host, 2024);
+	
 	if (app.start())
 	{
 
 		while (!app.isTimeToDie())
 		{
-			std::this_thread::sleep_for(std::chrono::milliseconds(ServerApp::cnstTimeoutRcv));
+			std::this_thread::sleep_for(std::chrono::milliseconds(ServerApp<winpoxi::Tcp>::cnstTimeoutRcv));
 		}
 
 		std::cout << "closing..." << std::endl;

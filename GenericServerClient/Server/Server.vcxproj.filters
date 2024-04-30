@@ -30,9 +30,6 @@
     <ClCompile Include="..\Sock\Tcp.cpp">
       <Filter>Sock</Filter>
     </ClCompile>
-    <ClCompile Include="Application.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Sock\Sock.h">

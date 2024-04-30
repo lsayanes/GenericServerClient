@@ -16,6 +16,7 @@
 
 #include <Sock.h>
 #include <Tcp.h>
+#include <Udp.h>
 
 using namespace winpoxi;
 
@@ -32,7 +33,7 @@ void start(Sock* pSock)
 
 	srand(static_cast<unsigned int>(time(nullptr)));
 
-	int nRcv;
+	int nRcv, nSnd=1;
 	int nIndex = 0;
 	char strSnd[1024] = {0};
 	char strRcv[1024] = {0};
@@ -45,33 +46,35 @@ void start(Sock* pSock)
 	uint64_t ullCnt = 0;
 
 	
-	while (true)
+	while (nSnd > 0)
 	{
 		auto start = std::chrono::high_resolution_clock::now();	
 
 		sprintf(strSnd, "Greetings server! this is %s (thread id %X) Msg Num : %llu;", szHost.c_str(), hashValue, ullCnt++);
-		pSock->snd(strSnd, strlen(strSnd));		
-		std::cout << "Snd: " << strSnd << std::endl;
-		
-		strRcv[0] = 0;
-		if ((nRcv = pSock->rcv(strRcv, sizeof(strRcv))) > 0)
+		if ((nSnd = pSock->snd(strSnd, strlen(strSnd))) > 0)
 		{
-			strRcv[nRcv] = '\0';
-			auto end = std::chrono::high_resolution_clock::now();
+			std::cout << "Snd: " << strSnd << std::endl;
 
-			std::stringstream ss(strRcv);
-			std::string token;
-
-			while (std::getline(ss, token, ';'))
+			strRcv[0] = 0;
+			if ((nRcv = pSock->rcv(strRcv, sizeof(strRcv))) > 0)
 			{
-				std::chrono::duration<double, std::milli> elapsed = end - start;
-				std::cout << "Rcv Num: " << nIndex << " :" << token << " Time: " << elapsed.count() << " ms" << std::endl;
-				nIndex++;
+				strRcv[nRcv] = '\0';
+				auto end = std::chrono::high_resolution_clock::now();
+
+				std::stringstream ss(strRcv);
+				std::string token;
+
+				while (std::getline(ss, token, ';'))
+				{
+					std::chrono::duration<double, std::milli> elapsed = end - start;
+					std::cout << "Rcv Num: " << nIndex << " :" << token << " Time: " << elapsed.count() << " ms" << std::endl;
+					nIndex++;
+				}
 			}
+
+			std::this_thread::sleep_for(std::chrono::milliseconds(500));
+			std::cout << std::endl;
 		}
-		
-		//std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-		std::cout << std::endl;
 	}
 }
 
@@ -85,7 +88,7 @@ int main()
 		return 1;
 	}
 
-	Tcp* pSock = new Tcp(szHost, nPort);
+	Sock* pSock = new Tcp(szHost, nPort);
 
 	if (pSock)
 	{

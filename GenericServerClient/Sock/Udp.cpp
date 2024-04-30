@@ -17,9 +17,13 @@
 namespace winpoxi
 {
 
-	Udp::Udp(const std::string strHost, int nPort) : Sock(strHost, nPort),
+	Udp::Udp(const std::string &strHost, int nPort) : Sock(strHost, nPort),
 		m_SockAddrBind { 0 },
 		m_SockAddrSndRcv{ 0 }
+	{
+	}
+
+	Udp::Udp(const std::string &strHost, int nPort, SOCKET sck) : Sock(strHost, nPort, sck)
 	{
 	}
 
@@ -60,12 +64,12 @@ namespace winpoxi
 
 
 			m_SockAddrSndRcv.sin_family = AF_INET;
-			m_SockAddrSndRcv.sin_port = htons(m_nPort);
+			m_SockAddrSndRcv.sin_port = htons(static_cast<u_short>(m_nPort));
 
 			memset((void*)&m_SockAddrBind, '\0', sizeof(struct sockaddr_in));
 
 			m_SockAddrBind.sin_family = AF_INET;
-			m_SockAddrBind.sin_port = htons(m_nPort);
+			m_SockAddrBind.sin_port = htons(static_cast<u_short>(m_nPort));
 
 			m_SockAddrBind.sin_addr.s_addr = INADDR_ANY;
 
@@ -114,7 +118,7 @@ namespace winpoxi
 		return nRet;
 	}
 
-	void Udp::peerName(char* strHostIp, SOCKET sk)
+	void Udp::peerName(char* strHostIp)
 	{
 		strHostIp[0] = 0;
 		if (INVALID_SOCKET != m_sck)

@@ -7,11 +7,10 @@ namespace winpoxi
 	class Sock
 	{
 	public:
-		Sock(const std::string strHost, int nPort);
-		Sock(const std::string strHost, int nPort, SOCKET sk);
+		Sock(const std::string &strHost, int nPort);
+		Sock(const std::string &strHost, int nPort, SOCKET sk);
 		Sock(const Sock&);
 
-		//Sock(const Sock&) = delete;
 		Sock(Sock&&) = delete;
 		Sock& operator=(const Sock&) = delete;
 		Sock& operator=(Sock&&) = delete;
@@ -49,5 +48,4 @@ namespace winpoxi
 		std::string		m_strHost;
 
 	};
-
 } //winpoxi

@@ -15,12 +15,16 @@
 namespace winpoxi
 {
 
-	Tcp::Tcp(const std::string strHost, int nPort) : Sock(strHost, nPort)
+	Tcp::Tcp(const std::string &strHost, int nPort) : Sock(strHost, nPort)
 	{
 
 	}
 
-	Tcp::Tcp(const std::string strHost, int nPort, SOCKET sck) : Sock(strHost, nPort, sck)
+	Tcp::Tcp(const std::string &strHost, int nPort, SOCKET sck) : Sock(strHost, nPort, sck)
+	{
+	}
+
+	Tcp::Tcp(const Tcp &cp) : Sock(cp)
 	{
 	}
 
@@ -68,7 +72,7 @@ namespace winpoxi
 		struct	sockaddr_in		Address;
 
 		Address.sin_family = AF_INET;
-		Address.sin_port = htons(m_nPort);
+		Address.sin_port = htons(static_cast<u_short>(m_nPort));
 		Address.sin_addr.s_addr = inet_addr(m_strHost.c_str());
 		memset(&(Address.sin_zero), 0, 8);
 
@@ -86,7 +90,7 @@ namespace winpoxi
 		if (-1 != ::setsockopt(m_sck, SOL_SOCKET, SO_REUSEADDR | SO_DONTLINGER, (char*)&nYes, sizeof(int)))
 		{
 			me.sin_family = AF_INET;
-			me.sin_port = htons(m_nPort);
+			me.sin_port = htons(static_cast<u_short>(m_nPort));
 			me.sin_addr.s_addr = htonl(ulIP);
 			memset(&(me.sin_zero), '\0', 8);
 
@@ -128,12 +132,12 @@ namespace winpoxi
 			if (-1 != ::setsockopt(m_sck, SOL_SOCKET, SO_REUSEADDR | SO_DONTLINGER, (char*)&nYes, sizeof(int)))
 			{
 				me.sin_family = AF_INET;
-				me.sin_port = htons(m_nPort);
+				me.sin_port = htons(static_cast<u_short>(m_nPort));
 				me.sin_addr.s_addr = htonl(ulIP);
 				memset(&(me.sin_zero), '\0', 8);
 
 				int nRet = ::bind(m_sck, (struct sockaddr*)&me, sizeof(struct sockaddr));
-				-1 != nRet && (nRet = ::listen(m_sck, 10) == -1);
+				(-1 != nRet) && ((nRet = ::listen(m_sck, 10)) == -1);
 
 				if (-1 != nRet)
 				{
@@ -143,7 +147,7 @@ namespace winpoxi
 					FD_ZERO(&read_fds);
 					FD_SET(m_sck, &vctClientFds);
 
-					for (int cfd : vctClientFds)
+					for (SOCKET cfd : vctClientFds)
 						FD_SET(cfd, &vctClientFds);
 					
 					if (::select(FD_SETSIZE, &read_fds, nullptr, nullptr, nullptr) >= 0)

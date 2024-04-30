@@ -126,7 +126,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <OutDir>$(SolutionDir)\Output\</OutDir>
-    <IncludePath>C:\PracticoVisure\Sock;$(IncludePath)</IncludePath>
+    <IncludePath>C:\GitHub\GenericServerClient\GenericServerClient\Sock;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <IncludePath>C:\PracticoVisure\Sock;$(IncludePath)</IncludePath>
