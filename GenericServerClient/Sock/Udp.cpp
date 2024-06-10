@@ -10,11 +10,14 @@
 
 #include <string.h>
 #include <optional>
+#include <chrono>
+#include <thread>
+
 
 #include "Sock.h"
 #include "Udp.h"
 
-namespace winpoxi
+namespace winposix
 {
 
 	Udp::Udp(const std::string &strHost, int nPort) : Sock(strHost, nPort),
@@ -127,6 +130,25 @@ namespace winpoxi
 			::getpeername(m_sck, (SOCKADDR*)&m_SockAddrSndRcv, &nSockLen);
 			strcpy(strHostIp, inet_ntoa(m_SockAddrSndRcv.sin_addr)); //htons(SenderAddr.sin_port)
 		}
+	}
+
+
+	SOCKET Udp::accept() const
+	{
+		fd_set read_fds;
+		FD_ZERO(&read_fds);
+		FD_SET(m_sck, &read_fds);
+
+		struct timeval tv;
+		tv.tv_sec = 0;
+		tv.tv_usec = 0;
+
+		int nRet = 0;
+		while ((nRet = ::select(m_sck + 1, &read_fds, NULL, NULL, &tv)) <= 0) 
+			std::this_thread::sleep_for(std::chrono::milliseconds(10));
+
+
+		return m_sck;
 	}
 
 

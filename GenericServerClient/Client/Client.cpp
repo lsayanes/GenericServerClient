@@ -18,7 +18,7 @@
 #include <Tcp.h>
 #include <Udp.h>
 
-using namespace winpoxi;
+using namespace winposix;
 
 
 const	std::string szHost{"localhost"};
@@ -88,7 +88,7 @@ int main()
 		return 1;
 	}
 
-	Sock* pSock = new Tcp(szHost, nPort);
+	Sock* pSock = new Udp(szHost, nPort);
 
 	if (pSock)
 	{

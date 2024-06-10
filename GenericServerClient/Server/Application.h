@@ -2,6 +2,9 @@
 
 namespace server
 {
+
+	static constexpr const char* name{ "server" };
+
 	template<typename T>
 	class Application
 	{
@@ -52,7 +55,7 @@ namespace server
 	{
 		
 		int err;
-		if (0 != (err = winpoxi::Sock::startup()))
+		if (0 != (err = winposix::Sock::startup()))
 			std::cout << "WSAStartup failed err: " << err << std::endl;
 		else
 			m_Clients.reserve(cnstMaxClients);
@@ -70,7 +73,7 @@ namespace server
 			delete m_pServerThread;
 
 		m_Clients.clear();
-		winpoxi::Sock::cleanup();
+		winposix::Sock::cleanup();
 	}
 
 	template<typename T>

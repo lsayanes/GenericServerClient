@@ -12,7 +12,7 @@
 #include "Sock.h"
 #include "Tcp.h"
 
-namespace winpoxi
+namespace winposix
 {
 
 	Tcp::Tcp(const std::string &strHost, int nPort) : Sock(strHost, nPort)

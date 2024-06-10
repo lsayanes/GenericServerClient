@@ -100,14 +100,14 @@ int main()
 
 	std::string host = "localhost";
 
-	ServerApp<winpoxi::Tcp> app(host, 2024);
+	ServerApp<winposix::Tcp> app(host, 2024);
 	
 	if (app.start())
 	{
 
 		while (!app.isTimeToDie())
 		{
-			std::this_thread::sleep_for(std::chrono::milliseconds(ServerApp<winpoxi::Tcp>::cnstTimeoutRcv));
+			std::this_thread::sleep_for(std::chrono::milliseconds(ServerApp<winposix::Tcp>::cnstTimeoutRcv));
 		}
 
 		std::cout << "closing..." << std::endl;

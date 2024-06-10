@@ -1,7 +1,7 @@
 #pragma once
 
 
-namespace winpoxi
+namespace winposix
 {
 
 	class Sock

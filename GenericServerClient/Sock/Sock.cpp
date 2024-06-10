@@ -15,7 +15,7 @@
 #include "Udp.h"
 
 
-namespace winpoxi
+namespace winposix
 {
 	
 	Sock::Sock(const std::string &strHost, int nPort):

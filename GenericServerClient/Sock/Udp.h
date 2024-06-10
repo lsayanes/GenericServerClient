@@ -1,6 +1,6 @@
 #pragma once
 
-namespace winpoxi
+namespace winposix
 {
 	struct Udp : public Sock
 	{
@@ -17,9 +17,8 @@ namespace winpoxi
 
 		bool connect();
 
-		//TODO :check it..
 		bool listen() const { return true; }
-		SOCKET accept() const { return m_sck;  }
+		SOCKET accept() const;
 		size_t select() const { return 0; }
 
 	private:
